@@ -25,12 +25,7 @@ export async function middleware(req: NextRequest) {
   );
 
   // IMPORTANT: Refresh session if expired - критично для SSR!
-  const { data: { user }, error } = await supabase.auth.getUser();
-
-  // Debug logging
-  console.log('Middleware - Path:', req.nextUrl.pathname);
-  console.log('Middleware - User:', user?.email || 'No user');
-  console.log('Middleware - Error:', error || 'No error');
+  const { data: { user } } = await supabase.auth.getUser();
 
   const isAuthPage = req.nextUrl.pathname.startsWith('/login') ||
                      req.nextUrl.pathname.startsWith('/signup');
@@ -39,13 +34,11 @@ export async function middleware(req: NextRequest) {
 
   // Redirect authenticated users away from auth pages
   if (user && isAuthPage) {
-    console.log('Redirecting authenticated user to /inbox');
     return NextResponse.redirect(new URL('/inbox', req.url));
   }
 
   // Redirect unauthenticated users to login
   if (!user && isProtectedRoute) {
-    console.log('Redirecting unauthenticated user to /login');
     return NextResponse.redirect(new URL('/login', req.url));
   }
 
