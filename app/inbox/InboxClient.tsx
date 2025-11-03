@@ -5,15 +5,9 @@ import TicketsList from '@/components/TicketsList';
 import TicketDetails from '@/components/TicketDetails';
 import Chat from '@/components/Chat';
 import { useUIStore } from '@/lib/store/ui-store';
-import { useEffect } from 'react';
 
 export default function InboxClient() {
   const { isNavbarExpanded, selectedTicketId, setSelectedTicketId } = useUIStore();
-
-  // Hydrate Zustand persist store on client mount
-  useEffect(() => {
-    useUIStore.persist.rehydrate();
-  }, []);
 
   return (
     <div className="flex h-screen overflow-hidden">

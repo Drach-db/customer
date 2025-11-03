@@ -25,12 +25,10 @@ export const useUIStore = create<UIState>()(
       setSelectedTicketId: (id) => set({ selectedTicketId: id }),
     }),
     {
-      name: 'ui-storage', // localStorage key
+      name: 'ui-storage',
       storage: createJSONStorage(() => localStorage),
       // Сохраняем только состояние navbar, не тикет (тикет сбрасывается при перезагрузке)
       partialize: (state) => ({ isNavbarExpanded: state.isNavbarExpanded }),
-      // IMPORTANT: skip hydration on server, we'll do it manually on client
-      skipHydration: true,
     }
   )
 );

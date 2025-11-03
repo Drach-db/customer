@@ -16,7 +16,7 @@ import {
   type LucideIcon
 } from 'lucide-react';
 import { TEXT_COLORS, SHARED_CLASSES } from '@/lib/constants/colors';
-import { signOut } from '@/lib/auth/auth';
+import { signOut, getCurrentUser } from '@/lib/auth/auth';
 
 const navItems = [
   { icon: Home, label: 'Home', href: '/' },
@@ -77,11 +77,24 @@ function NavItem({ icon: Icon, label, href, isExpanded, isActive }: NavItemProps
 
 export default function Navbar() {
   const { isNavbarExpanded, toggleNavbar } = useUIStore();
-  const { email: userEmail, name: userName, clearUser } = useUserStore();
+  const { email: userEmail, name: userName, setUser, clearUser } = useUserStore();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Load user data on mount (CSR approach)
+  useEffect(() => {
+    async function loadUser() {
+      const user = await getCurrentUser();
+      if (user) {
+        const email = user.email || '';
+        const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
+        setUser(email, name);
+      }
+    }
+    loadUser();
+  }, [setUser]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
