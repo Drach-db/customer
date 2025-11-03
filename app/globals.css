@@ -14,6 +14,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+
 /* Utility classes - Professional card style */
 @layer utilities {
   .card {
@@ -191,4 +192,14 @@ body {
   .customer-name {
     color: rgba(234, 88, 12, 0.8);
   }
+}
+
+/* Navbar collapsed state - prevents layout shift on page load */
+/* This class is added by inline script in layout.tsx before React hydrates */
+html.navbar-collapsed .fixed[class*="w-52"] {
+  width: 3.5rem !important; /* 56px = w-14 */
+}
+
+html.navbar-collapsed .transition-all[class*="ml-"][class*="224px"] {
+  margin-left: 72px !important;
 }
