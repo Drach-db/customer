@@ -96,6 +96,19 @@ export default function Navbar() {
     loadUser();
   }, [setUser]);
 
+  // Sync Zustand state with CSS class on mount
+  useEffect(() => {
+    // Check if navbar-collapsed class exists on html element
+    const isCollapsed = document.documentElement.classList.contains('navbar-collapsed');
+
+    // If visual state (CSS) doesn't match React state, update React state
+    if (isCollapsed && isNavbarExpanded) {
+      toggleNavbar(); // This will set isNavbarExpanded to false
+    } else if (!isCollapsed && !isNavbarExpanded) {
+      toggleNavbar(); // This will set isNavbarExpanded to true
+    }
+  }, []); // Run only once on mount
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -119,12 +132,26 @@ export default function Navbar() {
 
     if (!isClickableElement) {
       toggleNavbar();
+
+      // Also toggle the CSS class to keep visual state in sync
+      if (isNavbarExpanded) {
+        document.documentElement.classList.add('navbar-collapsed');
+      } else {
+        document.documentElement.classList.remove('navbar-collapsed');
+      }
     }
   };
 
   const handleToggleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     toggleNavbar();
+
+    // Also toggle the CSS class to keep visual state in sync
+    if (isNavbarExpanded) {
+      document.documentElement.classList.add('navbar-collapsed');
+    } else {
+      document.documentElement.classList.remove('navbar-collapsed');
+    }
   };
 
   const handleLogout = async () => {
