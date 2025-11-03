@@ -1,6 +1,6 @@
 'use client';
 
-import Navbar from '@/components/Navbar';
+import NavbarWrapper from '@/components/NavbarWrapper';
 import TicketsList from '@/components/TicketsList';
 import TicketDetails from '@/components/TicketDetails';
 import Chat from '@/components/Chat';
@@ -11,7 +11,7 @@ export default function InboxClient() {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <Navbar />
+      <NavbarWrapper />
 
       {/* Main Content - adjusted for navbar width */}
       <div className="inbox-content flex flex-1 gap-4 p-4 transition-all duration-300">

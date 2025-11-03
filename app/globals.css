@@ -211,8 +211,8 @@ html.navbar-collapsed {
   --content-margin: 72px;
 }
 
-/* Navbar width based on CSS variable */
-nav.navbar-container {
+/* Navbar width based on CSS variable - применяется к nav напрямую */
+nav {
   width: var(--navbar-width) !important;
 }
 
