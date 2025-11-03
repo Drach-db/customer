@@ -196,10 +196,40 @@ body {
 
 /* Navbar collapsed state - prevents layout shift on page load */
 /* This class is added by inline script in layout.tsx before React hydrates */
-html.navbar-collapsed .fixed[class*="w-52"] {
-  width: 3.5rem !important; /* 56px = w-14 */
+/* Uses CSS variables to maintain state consistency across all elements */
+
+:root {
+  --navbar-width: 13rem; /* 208px = w-52 expanded width */
+  --navbar-width-collapsed: 3.5rem; /* 56px = w-14 collapsed width */
+  --content-margin: 224px; /* 4px + 208px + 12px gap */
+  --content-margin-collapsed: 72px; /* 4px + 56px + 12px gap */
 }
 
-html.navbar-collapsed .transition-all[class*="ml-"][class*="224px"] {
-  margin-left: 72px !important;
+/* Apply collapsed dimensions when class is present */
+html.navbar-collapsed {
+  --navbar-width: 3.5rem;
+  --content-margin: 72px;
+}
+
+/* Navbar width based on CSS variable */
+nav.navbar-container {
+  width: var(--navbar-width) !important;
+}
+
+/* Content margin based on CSS variable */
+.inbox-content {
+  margin-left: var(--content-margin) !important;
+}
+
+/* Hide text elements when collapsed */
+html.navbar-collapsed nav .navbar-expandable {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Center header content when collapsed */
+html.navbar-collapsed nav .navbar-header {
+  justify-content: center !important;
 }

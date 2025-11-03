@@ -66,7 +66,7 @@ function NavItem({ icon: Icon, label, href, isExpanded, isActive }: NavItemProps
           <Icon className="w-5 h-5" />
         </div>
         {isExpanded && (
-          <span className="text-sm font-medium whitespace-nowrap overflow-hidden pr-3">
+          <span className="navbar-expandable text-sm font-medium whitespace-nowrap overflow-hidden pr-3">
             {label}
           </span>
         )}
@@ -136,6 +136,7 @@ export default function Navbar() {
   return (
     <nav
       className={`
+        navbar-container
         fixed left-4 top-4 bottom-4
         transition-all duration-300 ease-out
         ${isNavbarExpanded ? 'w-52' : 'w-14'}
@@ -146,21 +147,19 @@ export default function Navbar() {
       onClick={handleEmptyAreaClick}
     >
       {/* Header */}
-      <div className="flex items-center h-16 px-2">
+      <div className={`navbar-header flex items-center h-16 px-2 ${!isNavbarExpanded ? 'justify-center' : ''}`}>
         {isNavbarExpanded ? (
           <>
-            <div className={`w-8 h-8 rounded-lg ${SHARED_CLASSES.avatar} avatar-brand text-sm shadow-sm flex-shrink-0 ml-1`}>
+            <div className={`navbar-expandable w-8 h-8 rounded-lg ${SHARED_CLASSES.avatar} avatar-brand text-sm shadow-sm flex-shrink-0 ml-1`}>
               M
             </div>
-            <span className={`font-semibold ${TEXT_COLORS.primary} ml-2 mr-auto`}>Marketel</span>
+            <span className={`navbar-expandable font-semibold ${TEXT_COLORS.primary} ml-2 mr-auto`}>Marketel</span>
             <div className="pr-1">
               <ToggleButton onClick={handleToggleClick} isExpanded={isNavbarExpanded} />
             </div>
           </>
         ) : (
-          <div className="w-full flex justify-center">
-            <ToggleButton onClick={handleToggleClick} isExpanded={isNavbarExpanded} />
-          </div>
+          <ToggleButton onClick={handleToggleClick} isExpanded={isNavbarExpanded} />
         )}
       </div>
 
@@ -198,7 +197,7 @@ export default function Navbar() {
 
           {/* User info - появляется только при expanded */}
           {isNavbarExpanded && (
-            <div className="flex-1 min-w-0 ml-11 pr-2">
+            <div className="navbar-expandable flex-1 min-w-0 ml-11 pr-2">
               <p className={`text-sm font-medium ${TEXT_COLORS.primary} truncate`}>{userName || 'Guest'}</p>
               <p className={`text-xs ${TEXT_COLORS.secondary} truncate`}>{userEmail || 'Not logged in'}</p>
             </div>

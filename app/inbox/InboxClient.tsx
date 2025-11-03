@@ -7,19 +7,14 @@ import Chat from '@/components/Chat';
 import { useUIStore } from '@/lib/store/ui-store';
 
 export default function InboxClient() {
-  const { isNavbarExpanded, selectedTicketId, setSelectedTicketId } = useUIStore();
+  const { selectedTicketId, setSelectedTicketId } = useUIStore();
 
   return (
     <div className="flex h-screen overflow-hidden">
       <Navbar />
 
       {/* Main Content - adjusted for navbar width */}
-      <div
-        className={`
-          flex flex-1 gap-4 p-4 transition-all duration-300
-          ${isNavbarExpanded ? 'ml-[224px]' : 'ml-[72px]'}
-        `}
-      >
+      <div className="inbox-content flex flex-1 gap-4 p-4 transition-all duration-300">
         {/* Tickets List */}
         <TicketsList onTicketSelect={setSelectedTicketId} selectedTicketId={selectedTicketId} />
 
