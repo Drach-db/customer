@@ -76,9 +76,10 @@ function NavItem({ icon: Icon, label, href, isExpanded, isActive }: NavItemProps
 }
 
 export default function Navbar() {
-  const { isNavbarExpanded, toggleNavbar } = useUIStore();
+  const { isNavbarExpanded, toggleNavbar, setNavbarExpanded } = useUIStore();
   const { email: userEmail, name: userName, setUser, clearUser } = useUserStore();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -96,18 +97,20 @@ export default function Navbar() {
     loadUser();
   }, [setUser]);
 
-  // Sync Zustand state with CSS class on mount
+  // Sync Zustand state with CSS class on mount - FIXED VERSION
   useEffect(() => {
     // Check if navbar-collapsed class exists on html element
     const isCollapsed = document.documentElement.classList.contains('navbar-collapsed');
 
-    // If visual state (CSS) doesn't match React state, update React state
-    if (isCollapsed && isNavbarExpanded) {
-      toggleNavbar(); // This will set isNavbarExpanded to false
-    } else if (!isCollapsed && !isNavbarExpanded) {
-      toggleNavbar(); // This will set isNavbarExpanded to true
+    // Directly set the correct state without toggling
+    if (isCollapsed) {
+      setNavbarExpanded(false); // Set to collapsed
+    } else {
+      setNavbarExpanded(true); // Set to expanded
     }
-  }, []); // Run only once on mount
+
+    setIsInitialized(true);
+  }, [setNavbarExpanded]); // Add dependency
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -170,6 +173,7 @@ export default function Navbar() {
         ${SHARED_CLASSES.panel}
         flex flex-col
         z-50
+        ${!isInitialized ? 'opacity-0' : 'opacity-100'}
       `}
       onClick={handleEmptyAreaClick}
     >
