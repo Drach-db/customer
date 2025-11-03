@@ -76,10 +76,19 @@ function NavItem({ icon: Icon, label, href, isExpanded, isActive }: NavItemProps
 }
 
 export default function Navbar() {
+  // Initialize state based on CSS class immediately
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [initialExpanded] = useState(() => {
+    // Check CSS class on initial render to determine initial state
+    if (typeof window !== 'undefined') {
+      return !document.documentElement.classList.contains('navbar-collapsed');
+    }
+    return true;
+  });
+
   const { isNavbarExpanded, toggleNavbar, setNavbarExpanded } = useUIStore();
   const { email: userEmail, name: userName, setUser, clearUser } = useUserStore();
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -97,20 +106,11 @@ export default function Navbar() {
     loadUser();
   }, [setUser]);
 
-  // Sync Zustand state with CSS class on mount - FIXED VERSION
+  // Sync Zustand state with visual state on mount
   useEffect(() => {
-    // Check if navbar-collapsed class exists on html element
-    const isCollapsed = document.documentElement.classList.contains('navbar-collapsed');
-
-    // Directly set the correct state without toggling
-    if (isCollapsed) {
-      setNavbarExpanded(false); // Set to collapsed
-    } else {
-      setNavbarExpanded(true); // Set to expanded
-    }
-
+    setNavbarExpanded(initialExpanded);
     setIsInitialized(true);
-  }, [setNavbarExpanded]); // Add dependency
+  }, [initialExpanded, setNavbarExpanded]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -163,34 +163,36 @@ export default function Navbar() {
     router.push('/login');
   };
 
+  // Use initial state for SSR compatibility
+  const expandedForRender = !isInitialized ? initialExpanded : isNavbarExpanded;
+
   return (
     <nav
       className={`
         navbar-container
         fixed left-4 top-4 bottom-4
         transition-all duration-300 ease-out
-        ${isNavbarExpanded ? 'w-52' : 'w-14'}
+        ${expandedForRender ? 'w-52' : 'w-14'}
         ${SHARED_CLASSES.panel}
         flex flex-col
         z-50
-        ${!isInitialized ? 'opacity-0' : 'opacity-100'}
       `}
       onClick={handleEmptyAreaClick}
     >
       {/* Header */}
-      <div className={`navbar-header flex items-center h-16 px-2 ${!isNavbarExpanded ? 'justify-center' : ''}`}>
-        {isNavbarExpanded ? (
+      <div className={`navbar-header flex items-center h-16 px-2 ${!expandedForRender ? 'justify-center' : ''}`}>
+        {expandedForRender ? (
           <>
             <div className={`navbar-expandable w-8 h-8 rounded-lg ${SHARED_CLASSES.avatar} avatar-brand text-sm shadow-sm flex-shrink-0 ml-1`}>
               M
             </div>
             <span className={`navbar-expandable font-semibold ${TEXT_COLORS.primary} ml-2 mr-auto`}>Marketel</span>
             <div className="pr-1">
-              <ToggleButton onClick={handleToggleClick} isExpanded={isNavbarExpanded} />
+              <ToggleButton onClick={handleToggleClick} isExpanded={expandedForRender} />
             </div>
           </>
         ) : (
-          <ToggleButton onClick={handleToggleClick} isExpanded={isNavbarExpanded} />
+          <ToggleButton onClick={handleToggleClick} isExpanded={expandedForRender} />
         )}
       </div>
 
@@ -203,7 +205,7 @@ export default function Navbar() {
               icon={item.icon}
               label={item.label}
               href={item.href}
-              isExpanded={isNavbarExpanded}
+              isExpanded={expandedForRender}
               isActive={pathname === item.href}
             />
           ))}
@@ -227,7 +229,7 @@ export default function Navbar() {
           </div>
 
           {/* User info - появляется только при expanded */}
-          {isNavbarExpanded && (
+          {expandedForRender && (
             <div className="navbar-expandable flex-1 min-w-0 ml-11 pr-2">
               <p className={`text-sm font-medium ${TEXT_COLORS.primary} truncate`}>{userName || 'Guest'}</p>
               <p className={`text-xs ${TEXT_COLORS.secondary} truncate`}>{userEmail || 'Not logged in'}</p>
@@ -237,7 +239,7 @@ export default function Navbar() {
 
         {/* Dropdown Menu */}
         {showUserMenu && (
-          <div className={`absolute bottom-full mb-2 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden ${isNavbarExpanded ? 'left-2 right-2' : 'left-2 w-40'}`}>
+          <div className={`absolute bottom-full mb-2 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden ${expandedForRender ? 'left-2 right-2' : 'left-2 w-40'}`}>
             <button
               onClick={(e) => {
                 e.stopPropagation();
