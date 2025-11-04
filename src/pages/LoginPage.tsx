@@ -1,19 +1,15 @@
-'use client';
-
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { signUp, getCurrentUser } from '@/lib/auth/auth';
+import { useNavigate, Link } from 'react-router-dom';
+import { signIn, getCurrentUser } from '@/lib/auth/auth';
 import { TEXT_COLORS } from '@/lib/constants/colors';
 import FormInput from '@/components/FormInput';
 import { useUserStore } from '@/lib/store/user-store';
 
-export default function SignupPage() {
-  const router = useRouter();
+export default function LoginPage() {
+  const navigate = useNavigate();
   const { setUser } = useUserStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [workspaceName, setWorkspaceName] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -23,10 +19,10 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      const result = await signUp({ email, password, workspaceName });
+      const result = await signIn(email, password);
 
       if (!result.success) {
-        setError(result.error || 'Failed to sign up');
+        setError(result.error || 'Failed to sign in');
         setLoading(false);
         return;
       }
@@ -35,14 +31,12 @@ export default function SignupPage() {
       const user = await getCurrentUser();
       if (user) {
         const userEmail = user.email || '';
-        const userName = user.user_metadata?.full_name || workspaceName || user.email?.split('@')[0] || 'User';
+        const userName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
         setUser(userEmail, userName);
       }
 
-      // Redirect to workspace
-      if (result.workspace) {
-        router.push(`/workspaces/${result.workspace.slug}/inbox`);
-      }
+      // Redirect to inbox
+      window.location.href = '/inbox'; // Force full reload to update auth state
     } catch (err) {
       setError('An unexpected error occurred');
       setLoading(false);
@@ -56,10 +50,10 @@ export default function SignupPage() {
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className={`text-2xl font-semibold mb-2 ${TEXT_COLORS.primary}`}>
-              Create your workspace
+              Welcome back
             </h1>
             <p className={TEXT_COLORS.secondary}>
-              Get started with your customer support platform
+              Sign in to your workspace
             </p>
           </div>
 
@@ -72,15 +66,6 @@ export default function SignupPage() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
-            <FormInput
-              id="workspace"
-              label="Workspace name"
-              type="text"
-              value={workspaceName}
-              onChange={setWorkspaceName}
-              placeholder="Acme Inc"
-            />
-
             <FormInput
               id="email"
               label="Email"
@@ -96,8 +81,7 @@ export default function SignupPage() {
               type="password"
               value={password}
               onChange={setPassword}
-              placeholder="At least 6 characters"
-              minLength={6}
+              placeholder="Your password"
             />
 
             {/* Submit Button */}
@@ -108,19 +92,19 @@ export default function SignupPage() {
                 loading ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
-              {loading ? 'Creating workspace...' : 'Create workspace'}
+              {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </form>
 
-          {/* Sign In Link */}
+          {/* Sign Up Link */}
           <div className="mt-6 text-center">
             <p className={TEXT_COLORS.secondary}>
-              Already have an account?{' '}
+              Don't have an account?{' '}
               <Link
-                href="/login"
+                to="/signup"
                 className="link-accent font-medium"
               >
-                Sign in
+                Create workspace
               </Link>
             </p>
           </div>

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marketel - Customer Support Platform</title>
+    <script>
+      // Handle navbar and user state before React loads
+      try {
+        // Handle navbar state
+        var uiStored = localStorage.getItem('ui-storage');
+        if (uiStored) {
+          var uiData = JSON.parse(uiStored);
+          if (uiData.state && !uiData.state.isNavbarExpanded) {
+            document.documentElement.classList.add('navbar-collapsed');
+          }
+        }
+
+        // Handle user state
+        var userStored = localStorage.getItem('user-storage');
+        if (userStored) {
+          var userData = JSON.parse(userStored);
+          if (userData.state) {
+            window.__USER_DATA__ = userData.state;
+          }
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

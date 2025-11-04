@@ -1,12 +1,10 @@
-'use client';
-
 import NavbarFixed from '@/components/NavbarFixed';
 import TicketsList from '@/components/TicketsList';
 import TicketDetails from '@/components/TicketDetails';
 import Chat from '@/components/Chat';
 import { useUIStore } from '@/lib/store/ui-store';
 
-export default function InboxClient() {
+export default function InboxPage() {
   const { selectedTicketId, setSelectedTicketId } = useUIStore();
 
   return (
