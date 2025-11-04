@@ -460,12 +460,28 @@ html.navbar-collapsed .navbar-user-info {
   overflow: hidden;
 }
 
+/* Hide company logo completely when collapsed */
+html.navbar-collapsed .navbar-logo-icon {
+  display: none;
+}
+
+/* Center the toggle button when collapsed */
 html.navbar-collapsed .navbar-header {
-  justify-content: space-between;
+  justify-content: center;
 }
 
 html.navbar-collapsed .navbar-toggle-icon {
   transform: rotate(180deg);
+}
+
+/* Center user avatar when collapsed */
+html.navbar-collapsed .navbar-user {
+  justify-content: center;
+  padding: 0;
+}
+
+html.navbar-collapsed .navbar-avatar {
+  margin-left: 0;
 }
 
 html.navbar-collapsed .navbar-dropdown {

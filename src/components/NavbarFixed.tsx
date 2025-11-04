@@ -81,15 +81,26 @@ export default function NavbarFixed() {
     window.location.href = '/login'; // Force reload to update auth state
   };
 
+  const handleNavbarClick = (e: React.MouseEvent<HTMLElement>) => {
+    // Check if click is on a clickable element
+    const target = e.target as HTMLElement;
+    const isClickable = target.closest('button, a, .navbar-user');
+
+    // If not clickable element, toggle navbar
+    if (!isClickable) {
+      handleToggle();
+    }
+  };
+
   return (
-    <nav className="navbar-fixed">
+    <nav className="navbar-fixed" onClick={handleNavbarClick}>
       {/* Header */}
       <div className="navbar-header">
         <div className="navbar-logo">
           <div className="navbar-logo-icon">M</div>
           <span className="navbar-logo-text">Marketel</span>
         </div>
-        <button onClick={handleToggle} className="navbar-toggle">
+        <button onClick={(e) => { e.stopPropagation(); handleToggle(); }} className="navbar-toggle">
           <ChevronLeft className="navbar-toggle-icon" />
         </button>
       </div>
