@@ -18,11 +18,21 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                var stored = localStorage.getItem('ui-storage');
-                if (stored) {
-                  var data = JSON.parse(stored);
-                  if (data.state && !data.state.isNavbarExpanded) {
+                // Handle navbar state
+                var uiStored = localStorage.getItem('ui-storage');
+                if (uiStored) {
+                  var uiData = JSON.parse(uiStored);
+                  if (uiData.state && !uiData.state.isNavbarExpanded) {
                     document.documentElement.classList.add('navbar-collapsed');
+                  }
+                }
+
+                // Handle user state - store in window for initial render
+                var userStored = localStorage.getItem('user-storage');
+                if (userStored) {
+                  var userData = JSON.parse(userStored);
+                  if (userData.state) {
+                    window.__USER_DATA__ = userData.state;
                   }
                 }
               } catch (e) {}

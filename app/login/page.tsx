@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { signIn } from '@/lib/auth/auth';
+import { signIn, getCurrentUser } from '@/lib/auth/auth';
 import { TEXT_COLORS } from '@/lib/constants/colors';
 import FormInput from '@/components/FormInput';
+import { useUserStore } from '@/lib/store/user-store';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { setUser } = useUserStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -26,6 +28,14 @@ export default function LoginPage() {
         setError(result.error || 'Failed to sign in');
         setLoading(false);
         return;
+      }
+
+      // Get user data and store it
+      const user = await getCurrentUser();
+      if (user) {
+        const userEmail = user.email || '';
+        const userName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
+        setUser(userEmail, userName);
       }
 
       // Redirect to inbox (temporarily, until we create workspace routes)

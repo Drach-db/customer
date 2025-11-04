@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { signUp } from '@/lib/auth/auth';
+import { signUp, getCurrentUser } from '@/lib/auth/auth';
 import { TEXT_COLORS } from '@/lib/constants/colors';
 import FormInput from '@/components/FormInput';
+import { useUserStore } from '@/lib/store/user-store';
 
 export default function SignupPage() {
   const router = useRouter();
+  const { setUser } = useUserStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [workspaceName, setWorkspaceName] = useState('');
@@ -27,6 +29,14 @@ export default function SignupPage() {
         setError(result.error || 'Failed to sign up');
         setLoading(false);
         return;
+      }
+
+      // Get user data and store it
+      const user = await getCurrentUser();
+      if (user) {
+        const userEmail = user.email || '';
+        const userName = user.user_metadata?.full_name || workspaceName || user.email?.split('@')[0] || 'User';
+        setUser(userEmail, userName);
       }
 
       // Redirect to workspace

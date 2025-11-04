@@ -35,9 +35,14 @@ export default function NavbarFixed() {
   const pathname = usePathname();
   const userMenuRef = useRef<HTMLDivElement>(null);
 
-  // Load user data on mount
+  // Load user data on mount only if not already in store
   useEffect(() => {
     async function loadUser() {
+      // Skip if we already have user data (from localStorage)
+      if (userEmail || userName) {
+        return;
+      }
+
       const user = await getCurrentUser();
       if (user) {
         const email = user.email || '';
@@ -46,7 +51,7 @@ export default function NavbarFixed() {
       }
     }
     loadUser();
-  }, [setUser]);
+  }, [setUser, userEmail, userName]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -72,8 +77,8 @@ export default function NavbarFixed() {
   };
 
   const handleLogout = async () => {
-    clearUser();
     await signOut();
+    clearUser(); // Clear after signOut to ensure localStorage is cleared
     router.push('/login');
   };
 

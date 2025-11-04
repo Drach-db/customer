@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface UserState {
   email: string;
@@ -7,10 +8,18 @@ interface UserState {
   clearUser: () => void;
 }
 
-// Данные приходят с сервера через SSR, persist не нужен
-export const useUserStore = create<UserState>()((set) => ({
-  email: '',
-  name: '',
-  setUser: (email, name) => set({ email, name }),
-  clearUser: () => set({ email: '', name: '' }),
-}));
+// Use persist to avoid flashing "Guest/Not logged in" on page refresh
+export const useUserStore = create<UserState>()(
+  persist(
+    (set) => ({
+      email: '',
+      name: '',
+      setUser: (email, name) => set({ email, name }),
+      clearUser: () => set({ email: '', name: '' }),
+    }),
+    {
+      name: 'user-storage',
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);
