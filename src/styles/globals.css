@@ -367,7 +367,8 @@ html.navbar-collapsed nav .navbar-header {
 }
 
 .navbar-user {
-  display: flex;
+  display: grid;
+  grid-template-columns: 3rem 1fr;
   align-items: center;
   height: 3rem;
   padding: 0 0.5rem;
@@ -391,15 +392,11 @@ html.navbar-collapsed nav .navbar-header {
   justify-content: center;
   font-weight: 600;
   font-size: 0.875rem;
-  flex-shrink: 0;
-  margin-left: 0.5rem;
+  justify-self: center;
 }
 
 .navbar-user-info {
-  flex: 1;
   min-width: 0;
-  margin-left: 0.75rem;
-  padding-right: 0.5rem;
   transition: opacity 200ms, width 200ms;
 }
 
@@ -474,14 +471,10 @@ html.navbar-collapsed .navbar-toggle-icon {
   transform: rotate(180deg);
 }
 
-/* Center user avatar when collapsed */
+/* Center user avatar when collapsed - grid stays the same */
 html.navbar-collapsed .navbar-user {
-  justify-content: center;
+  grid-template-columns: 3rem 0;
   padding: 0;
-}
-
-html.navbar-collapsed .navbar-avatar {
-  margin-left: 0;
 }
 
 html.navbar-collapsed .navbar-dropdown {
