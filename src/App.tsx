@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { getCurrentUser } from './lib/auth/auth'
+import AuthLayout from './components/AuthLayout'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import InboxPage from './pages/InboxPage'
@@ -28,15 +29,24 @@ function App() {
 
   return (
     <Routes>
+      {/* Public routes */}
       <Route path="/login" element={
         isAuthenticated ? <Navigate to="/inbox" replace /> : <LoginPage />
       } />
       <Route path="/signup" element={
         isAuthenticated ? <Navigate to="/inbox" replace /> : <SignupPage />
       } />
-      <Route path="/inbox" element={
-        isAuthenticated ? <InboxPage /> : <Navigate to="/login" replace />
-      } />
+
+      {/* Protected routes with layout */}
+      <Route element={isAuthenticated ? <AuthLayout /> : <Navigate to="/login" replace />}>
+        <Route path="/inbox" element={<InboxPage />} />
+        <Route path="/conversations" element={<InboxPage />} />
+        <Route path="/contacts" element={<InboxPage />} />
+        <Route path="/analytics" element={<InboxPage />} />
+        <Route path="/settings" element={<InboxPage />} />
+      </Route>
+
+      {/* Default route */}
       <Route path="/" element={
         <Navigate to={isAuthenticated ? "/inbox" : "/login"} replace />
       } />
