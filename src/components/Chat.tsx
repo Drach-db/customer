@@ -129,7 +129,7 @@ export default function Chat({ ticketId }: ChatProps) {
   return (
     <div className={`flex-1 flex flex-col ${SHARED_CLASSES.panel} overflow-hidden relative`}>
       {/* Header - абсолютно позиционирована поверх */}
-      <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between bg-white/40 dark:bg-gray-900/40 backdrop-blur-md z-10">
+      <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between bg-white/40 backdrop-blur-md z-10">
         <div className="flex items-center gap-3">
           <div className={`w-10 h-10 rounded-full ${SHARED_CLASSES.avatar} avatar-soft-green flex-shrink-0`}>
             J
@@ -164,7 +164,7 @@ export default function Chat({ ticketId }: ChatProps) {
                   ${
                     msg.sender === 'agent'
                       ? 'rounded-br-sm message-outgoing'
-                      : `bg-gray-50 dark:bg-gray-800 ${TEXT_COLORS.primary} dark:text-gray-200 rounded-bl-sm border border-gray-200 dark:border-gray-700`
+                      : `bg-gray-50 ${TEXT_COLORS.primary} rounded-bl-sm border border-gray-200`
                   }
                 `}
               >
@@ -189,7 +189,7 @@ export default function Chat({ ticketId }: ChatProps) {
           <button className="h-10 w-10 flex items-center justify-center rounded-lg transition-all duration-200 group flex-shrink-0">
             <Paperclip className={`w-5 h-5 ${TEXT_COLORS.primary} group-hover:rotate-45 transition-transform duration-300`} />
           </button>
-          <div className={`flex-1 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-lg px-4 flex items-center transition-colors shadow-sm`}>
+          <div className={`flex-1 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-lg px-4 flex items-center transition-colors shadow-sm`}>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}

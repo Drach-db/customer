@@ -1,6 +1,5 @@
 import { useUIStore } from '@/lib/store/ui-store';
 import { useUserStore } from '@/lib/store/user-store';
-import { useTheme } from '@/contexts/ThemeContext';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import {
@@ -12,8 +11,6 @@ import {
   MessageSquare,
   BarChart,
   LogOut,
-  Sun,
-  Moon,
   type LucideIcon
 } from 'lucide-react';
 import { TEXT_COLORS, SHARED_CLASSES } from '@/lib/constants/colors';
@@ -31,7 +28,6 @@ const navItems = [
 export default function NavbarFixed() {
   const { toggleNavbar } = useUIStore();
   const { email: userEmail, name: userName, setUser, clearUser } = useUserStore();
-  const { theme, toggleTheme } = useTheme();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -126,26 +122,6 @@ export default function NavbarFixed() {
             </li>
           ))}
         </ul>
-      </div>
-
-      {/* Theme Toggle */}
-      <div className="navbar-theme-toggle">
-        <button
-          onClick={(e) => { e.stopPropagation(); toggleTheme(); }}
-          className="theme-toggle-btn"
-          aria-label="Toggle theme"
-        >
-          <div className="nav-icon">
-            {theme === 'light' ? (
-              <Moon className="w-5 h-5" />
-            ) : (
-              <Sun className="w-5 h-5" />
-            )}
-          </div>
-          <span className="nav-text">
-            {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
-          </span>
-        </button>
       </div>
 
       {/* Footer - User Profile */}

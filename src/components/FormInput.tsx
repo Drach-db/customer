@@ -36,7 +36,7 @@ export default function FormInput({
         required={required}
         placeholder={placeholder}
         minLength={minLength}
-        className={`w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg input-focus ${TEXT_COLORS.primary} placeholder-gray-400 dark:placeholder-gray-500`}
+        className={`w-full px-4 py-3 bg-white border border-gray-200 rounded-lg input-focus ${TEXT_COLORS.primary}`}
       />
     </div>
   );
