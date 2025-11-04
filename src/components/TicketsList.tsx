@@ -201,14 +201,14 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
   return (
     <div className={`w-96 ${SHARED_CLASSES.panel} flex flex-col overflow-hidden relative`}>
       {/* Search & Filter - прозрачная шапка */}
-      <div className="absolute top-0 left-0 right-0 p-4 bg-white/40 backdrop-blur-md z-10">
+      <div className="absolute top-0 left-0 right-0 p-4 bg-white/40 dark:bg-gray-900/40 backdrop-blur-md z-10">
         <div className="flex items-center gap-2">
           <div className="flex-1 relative">
             <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${TEXT_COLORS.secondary}`} />
             <input
               type="text"
               placeholder="Search tickets..."
-              className={`w-full h-10 pl-9 pr-3 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-lg text-sm ${TEXT_COLORS.primary} placeholder-gray-400 focus:outline-none transition-colors shadow-sm`}
+              className={`w-full h-10 pl-9 pr-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-lg text-sm ${TEXT_COLORS.primary} dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none transition-colors shadow-sm`}
             />
           </div>
           <div className="relative">
@@ -221,7 +221,7 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
 
             {/* Filter Dropdown */}
             {showFilters && (
-              <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-10">
+              <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-2 z-10">
                 <button className={`w-full text-left px-3 py-2 text-sm ${TEXT_COLORS.primary} ${SHARED_CLASSES.hover} rounded-lg ${SHARED_CLASSES.transition}`}>
                   All tickets
                 </button>

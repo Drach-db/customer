@@ -1,18 +1,18 @@
 // Shared color constants for consistent design
 export const TEXT_COLORS = {
-  primary: 'text-gray-700', // #374151 - Notion-style main text
-  secondary: 'text-gray-500', // Secondary/muted text
-  tertiary: 'text-gray-400', // Placeholder/icon text
+  primary: 'text-gray-700 dark:text-gray-200', // #374151 - Notion-style main text
+  secondary: 'text-gray-500 dark:text-gray-400', // Secondary/muted text
+  tertiary: 'text-gray-400 dark:text-gray-500', // Placeholder/icon text
 } as const;
 
 export const SHARED_CLASSES = {
   hover: 'hover-peach',
   transition: 'transition-colors',
   avatar: 'flex items-center justify-center font-semibold',
-  border: 'border border-gray-200',
-  input: 'bg-white border border-gray-200 rounded-lg',
-  card: 'bg-white border border-gray-200 rounded-xl shadow-sm',
-  panel: 'bg-white border border-gray-200 shadow-sm rounded-2xl',
+  border: 'border border-gray-200 dark:border-gray-700',
+  input: 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg',
+  card: 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm',
+  panel: 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-sm rounded-2xl',
 } as const;
 
 // Avatar color variants
