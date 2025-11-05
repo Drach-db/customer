@@ -192,6 +192,51 @@ body {
   .customer-name {
     color: rgba(234, 88, 12, 0.8);
   }
+
+  /* Common tag/badge base styles */
+  .tag {
+    @apply text-xs px-2 py-1 rounded-md flex items-center gap-1.5;
+  }
+
+  /* Common button base */
+  .btn-base {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+  }
+
+  /* Icon button */
+  .btn-icon {
+    @apply h-10 w-10 flex items-center justify-center rounded-lg transition-all duration-200 hover:bg-gray-100;
+  }
+
+  /* Input field base */
+  .input-base {
+    @apply w-full bg-white border border-gray-200 rounded-lg text-sm focus:outline-none transition-colors;
+  }
+
+  /* Panel/Card container */
+  .panel {
+    @apply bg-white border border-gray-200 shadow-sm rounded-2xl;
+  }
+
+  /* Centered flex container */
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+
+  /* Text truncation */
+  .text-truncate {
+    @apply truncate;
+  }
+
+  /* Common hover effects */
+  .hover-gray {
+    @apply hover:bg-gray-100 transition-colors;
+  }
+
+  /* Section spacing */
+  .section-spacing {
+    @apply space-y-3;
+  }
 }
 
 /* Navbar collapsed state - prevents layout shift on page load */
@@ -367,20 +412,22 @@ html.navbar-collapsed nav .navbar-header {
 }
 
 .navbar-user {
-  display: grid;
-  grid-template-columns: 3rem 1fr;
+  display: flex;
   align-items: center;
+  justify-content: center;
   height: 3rem;
-  padding: 0 0.5rem;
+  padding: 0.5rem;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: background 200ms;
+  position: relative;
 }
 
 .navbar-user:hover {
   background: rgba(251, 146, 60, 0.06);
 }
 
+/* Avatar wrapper - contains avatar and info */
 .navbar-avatar {
   width: 2rem;
   height: 2rem;
@@ -392,12 +439,15 @@ html.navbar-collapsed nav .navbar-header {
   justify-content: center;
   font-weight: 600;
   font-size: 0.875rem;
-  justify-self: center;
 }
 
+/* User info - positioned absolutely to not affect avatar position */
 .navbar-user-info {
+  position: absolute;
+  left: 3.5rem;
+  right: 0.5rem;
   min-width: 0;
-  transition: opacity 200ms, width 200ms;
+  transition: opacity 200ms;
 }
 
 .navbar-user-name {
@@ -471,10 +521,9 @@ html.navbar-collapsed .navbar-toggle-icon {
   transform: rotate(180deg);
 }
 
-/* Center user avatar when collapsed - grid stays the same */
+/* When collapsed, avatar stays centered since parent uses justify-content: center */
 html.navbar-collapsed .navbar-user {
-  grid-template-columns: 3rem 0;
-  padding: 0;
+  /* Avatar already centered, no changes needed */
 }
 
 html.navbar-collapsed .navbar-dropdown {

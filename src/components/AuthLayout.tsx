@@ -1,6 +1,6 @@
 import { Outlet, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import NavbarFixed from './NavbarFixed';
+import Navbar from './Navbar';
 import { getCurrentUser } from '@/lib/auth/auth';
 import { useUserStore } from '@/lib/store/user-store';
 
@@ -30,7 +30,7 @@ export default function AuthLayout() {
   // Always show the layout with navbar for loading and authenticated states
   return (
     <div className="flex h-screen overflow-hidden">
-      <NavbarFixed />
+      <Navbar />
 
       {/* Main Content - adjusted for navbar width */}
       <div className="inbox-content flex flex-1 transition-all duration-300">

@@ -1,7 +1,7 @@
 'use client';
 
 import { LucideIcon } from 'lucide-react';
-import { TEXT_COLORS, SHARED_CLASSES } from '@/lib/constants/colors';
+import { TEXT_COLORS } from '@/lib/constants/colors';
 
 interface EmptyStateProps {
   icon: LucideIcon;
@@ -25,7 +25,7 @@ export default function EmptyState({
   const sizes = ICON_SIZES[iconSize];
 
   return (
-    <div className={`flex-1 flex items-center justify-center ${SHARED_CLASSES.panel}`}>
+    <div className="flex-1 panel flex-center">
       <div className="text-center px-8">
         <div className={`inline-flex items-center justify-center ${sizes.container} rounded-full mb-4 placeholder-bg`}>
           <Icon className={`${sizes.icon} placeholder-icon`} strokeWidth={1.5} />
