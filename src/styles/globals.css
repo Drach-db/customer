@@ -327,6 +327,34 @@ body {
   .gap-lg {
     @apply gap-4;
   }
+
+  /* Custom select styling */
+  .custom-select {
+    @apply w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm transition-all duration-200 appearance-none cursor-pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+  }
+
+  .custom-select:hover {
+    @apply bg-white border-gray-200;
+  }
+
+  .custom-select:focus {
+    @apply outline-none bg-white border-orange-200;
+  }
+
+  /* Filter label styling */
+  .filter-label {
+    @apply text-xs font-medium text-gray-500 mb-1.5 block;
+  }
+
+  /* Filter dropdown container */
+  .filter-dropdown {
+    @apply absolute right-0 top-full mt-2 w-80 bg-white border border-gray-100 rounded-xl shadow-xl p-5 z-50;
+  }
 }
 
 /* Navbar collapsed state - prevents layout shift on page load */

@@ -237,39 +237,59 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
 
             {/* Filter Dropdown */}
             {showFilters && (
-              <div className="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-10">
-                <div className="space-y-4">
+              <div className="filter-dropdown">
+                <div className="space-y-3.5">
+                  {/* Header */}
+                  <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-sm font-semibold text-gray-800">Filters</h3>
+                      {(filterStatus !== 'all' || filterProject !== 'all' || filterSource !== 'all') && (
+                        <span className="px-1.5 py-0.5 text-xs bg-orange-100 text-orange-600 rounded-full">
+                          {[filterStatus !== 'all', filterProject !== 'all', filterSource !== 'all'].filter(Boolean).length}
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => setShowFilters(false)}
+                      className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+                    >
+                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+
                   {/* Status Filter */}
                   <div>
-                    <label className={`text-xs font-medium ${TEXT_COLORS.secondary} mb-2 block`}>Status</label>
+                    <label className="filter-label">Status</label>
                     <select
                       value={filterStatus}
                       onChange={(e) => setFilterStatus(e.target.value)}
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-orange-200"
+                      className="custom-select"
                     >
                       <option value="all">All statuses</option>
-                      <option value="open">Open</option>
-                      <option value="pending">Pending</option>
-                      <option value="resolved">Resolved</option>
-                      <option value="closed">Closed</option>
-                      <option value="unread">Unread only</option>
+                      <option value="open">🟢 Open</option>
+                      <option value="pending">🟡 Pending</option>
+                      <option value="resolved">✅ Resolved</option>
+                      <option value="closed">⚫ Closed</option>
+                      <option value="unread">🔵 Unread only</option>
                     </select>
                   </div>
 
                   {/* Project Filter */}
                   <div>
-                    <label className={`text-xs font-medium ${TEXT_COLORS.secondary} mb-2 block`}>Project</label>
+                    <label className="filter-label">Project</label>
                     <select
                       value={filterProject}
                       onChange={(e) => setFilterProject(e.target.value)}
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-orange-200"
+                      className="custom-select"
                     >
                       <option value="all">All projects</option>
                       {[...new Map(tickets.map(t => [t.project?.id, t.project])).values()]
                         .filter(Boolean)
                         .map(project => (
                           <option key={project.id} value={project.id}>
-                            {project.name}
+                            📁 {project.name}
                           </option>
                         ))}
                     </select>
@@ -277,31 +297,33 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
 
                   {/* Source Filter */}
                   <div>
-                    <label className={`text-xs font-medium ${TEXT_COLORS.secondary} mb-2 block`}>Source</label>
+                    <label className="filter-label">Source</label>
                     <select
                       value={filterSource}
                       onChange={(e) => setFilterSource(e.target.value)}
-                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-orange-200"
+                      className="custom-select"
                     >
                       <option value="all">All sources</option>
-                      <option value="email">Email</option>
-                      <option value="telegram">Telegram</option>
-                      <option value="whatsapp">WhatsApp</option>
+                      <option value="email">✉️ Email</option>
+                      <option value="telegram">💬 Telegram</option>
+                      <option value="whatsapp">📱 WhatsApp</option>
                     </select>
                   </div>
 
                   {/* Clear Filters */}
                   {(filterStatus !== 'all' || filterProject !== 'all' || filterSource !== 'all') && (
-                    <button
-                      onClick={() => {
-                        setFilterStatus('all');
-                        setFilterProject('all');
-                        setFilterSource('all');
-                      }}
-                      className="w-full px-3 py-2 text-sm text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-                    >
-                      Clear all filters
-                    </button>
+                    <div className="pt-2 border-t border-gray-100">
+                      <button
+                        onClick={() => {
+                          setFilterStatus('all');
+                          setFilterProject('all');
+                          setFilterSource('all');
+                        }}
+                        className="w-full px-3 py-2 text-sm text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors font-medium"
+                      >
+                        Clear all filters
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
