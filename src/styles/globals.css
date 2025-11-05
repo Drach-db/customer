@@ -237,6 +237,96 @@ body {
   .section-spacing {
     @apply space-y-3;
   }
+
+  /* Glass morphism effects */
+  .glass-light {
+    @apply bg-white/40 backdrop-blur-md;
+  }
+
+  .glass-medium {
+    @apply bg-white/90 backdrop-blur-sm border border-gray-200;
+  }
+
+  /* Search input styling */
+  .search-input {
+    @apply w-full h-10 pl-9 pr-3 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-lg text-sm placeholder-gray-400 focus:outline-none transition-colors shadow-sm;
+  }
+
+  /* Header sections */
+  .header-section {
+    @apply absolute top-0 left-0 right-0 p-4 bg-white/40 backdrop-blur-md z-10;
+  }
+
+  /* Icon container */
+  .icon-container-sm {
+    @apply w-16 h-16 rounded-full flex-center;
+  }
+
+  .icon-container-md {
+    @apply w-20 h-20 rounded-full flex-center;
+  }
+
+  /* Message bubbles */
+  .message-bubble {
+    @apply px-3.5 py-2 rounded-2xl;
+  }
+
+  .message-bubble-sent {
+    @apply message-outgoing rounded-br-sm;
+  }
+
+  .message-bubble-received {
+    @apply bg-gray-50 rounded-bl-sm border border-gray-200;
+  }
+
+  /* Dropdown menu */
+  .dropdown-menu {
+    @apply absolute bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-10;
+  }
+
+  /* Avatar sizes */
+  .avatar-sm {
+    @apply w-8 h-8 rounded-full flex-center;
+  }
+
+  .avatar-md {
+    @apply w-10 h-10 rounded-full flex-center;
+  }
+
+  .avatar-lg {
+    @apply w-12 h-12 rounded-full flex-center;
+  }
+
+  /* Form elements */
+  .form-error {
+    @apply mb-6 p-4 bg-red-50 border border-red-200 rounded-lg;
+  }
+
+  .form-button {
+    @apply w-full py-3 px-4 font-medium rounded-lg transition-all duration-200;
+  }
+
+  /* Auth layout */
+  .auth-container {
+    @apply min-h-screen flex items-center justify-center p-4;
+  }
+
+  .auth-card {
+    @apply bg-white border border-gray-200 rounded-2xl shadow-sm p-8;
+  }
+
+  /* Flex gaps */
+  .gap-sm {
+    @apply gap-2;
+  }
+
+  .gap-md {
+    @apply gap-3;
+  }
+
+  .gap-lg {
+    @apply gap-4;
+  }
 }
 
 /* Navbar collapsed state - prevents layout shift on page load */

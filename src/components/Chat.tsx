@@ -220,11 +220,11 @@ export default function Chat({ ticketId }: ChatProps) {
   return (
     <div className="flex-1 flex flex-col panel overflow-hidden relative">
       {/* Header - абсолютно позиционирована поверх */}
-      <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between bg-white/40 backdrop-blur-md z-10">
-        <div className="flex items-center gap-3">
+      <div className="header-section flex items-center justify-between">
+        <div className="flex items-center gap-md">
           {ticket?.customer && (
             <>
-              <div className="w-10 h-10 rounded-full flex-center font-semibold avatar-soft-green flex-shrink-0">
+              <div className="avatar-md font-semibold avatar-soft-green flex-shrink-0">
                 {ticket.customer.name?.charAt(0)?.toUpperCase() || 'C'}
               </div>
               <div>

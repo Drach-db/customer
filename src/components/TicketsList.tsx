@@ -168,8 +168,8 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
   return (
     <div className="w-96 panel flex flex-col overflow-hidden relative">
       {/* Search & Filter - прозрачная шапка */}
-      <div className="absolute top-0 left-0 right-0 p-4 bg-white/40 backdrop-blur-md z-10">
-        <div className="flex items-center gap-2">
+      <div className="header-section">
+        <div className="flex items-center gap-sm">
           <div className="flex-1 relative">
             <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${TEXT_COLORS.secondary}`} />
             <input
@@ -177,7 +177,7 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
               placeholder="Search tickets..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full h-10 pl-9 pr-3 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-lg text-sm ${TEXT_COLORS.primary} placeholder-gray-400 focus:outline-none transition-colors shadow-sm`}
+              className={`search-input ${TEXT_COLORS.primary}`}
             />
           </div>
           <button

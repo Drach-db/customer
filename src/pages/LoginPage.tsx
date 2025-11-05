@@ -44,9 +44,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="auth-container">
       <div className="w-full max-w-md">
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
+        <div className="auth-card">
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className={`text-2xl font-semibold mb-2 ${TEXT_COLORS.primary}`}>
@@ -59,7 +59,7 @@ export default function LoginPage() {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div className="form-error">
               <p className="text-sm text-red-600">{error}</p>
             </div>
           )}
@@ -88,7 +88,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-3 px-4 btn-primary font-medium rounded-lg ${
+              className={`form-button btn-primary ${
                 loading ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
