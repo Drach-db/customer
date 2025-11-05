@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { Search, SlidersHorizontal, Folder, RefreshCw, AlertCircle } from 'lucide-react';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { Search, SlidersHorizontal, Folder, RefreshCw, AlertCircle, Check } from 'lucide-react';
 import { SourceIcon, TICKET_SOURCES } from '@/lib/constants/ticket-sources';
 import { TEXT_COLORS } from '@/lib/constants/colors';
 import { getTickets, type TicketWithRelations } from '@/lib/services/tickets';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { formatDistanceToNow } from 'date-fns';
 import PlaceholderState from './PlaceholderState';
+import { TICKET_STATUS, CONNECTOR_TYPE } from '@/lib/types/enums';
 
 // Tag component using global CSS
 interface TagProps {
@@ -40,9 +41,12 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
   const [tickets, setTickets] = useState<TicketWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [filterProject, setFilterProject] = useState<string>('all');
+  const [filterSource, setFilterSource] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const { currentWorkspace } = useAuth();
 
   // Load tickets
@@ -54,6 +58,23 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
       setLoading(false);
     }
   }, [currentWorkspace]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowFilters(false);
+      }
+    };
+
+    if (showFilters) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showFilters]);
 
   const loadTickets = async () => {
     if (!currentWorkspace) {
@@ -88,6 +109,16 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
         }
       }
 
+      // Project filter
+      if (filterProject !== 'all' && ticket.project?.id !== filterProject) {
+        return false;
+      }
+
+      // Source filter
+      if (filterSource !== 'all' && ticket.connector?.type !== filterSource) {
+        return false;
+      }
+
       // Search filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
@@ -102,7 +133,7 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
 
       return true;
     });
-  }, [tickets, filterStatus, searchQuery]);
+  }, [tickets, filterStatus, filterProject, filterSource, searchQuery]);
 
   const formatTicketTime = (date: string) => {
     try {
@@ -188,47 +219,91 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
           >
             <RefreshCw className={`w-5 h-5 ${TEXT_COLORS.primary} ${loading ? 'animate-spin' : ''}`} />
           </button>
-          <div className="relative">
+          <div className="relative" ref={dropdownRef}>
             <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="btn-icon group"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowFilters(!showFilters);
+              }}
+              className="btn-icon group relative"
             >
               <SlidersHorizontal className={`w-5 h-5 ${TEXT_COLORS.primary} group-hover:rotate-90 transition-transform duration-300`} />
+              {/* Active filters indicator */}
+              {(filterStatus !== 'all' || filterProject !== 'all' || filterSource !== 'all') && (
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-orange-500 rounded-full"></span>
+              )}
             </button>
 
             {/* Filter Dropdown */}
             {showFilters && (
-              <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-10">
-                <button
-                  onClick={() => { setFilterStatus('all'); setShowFilters(false); }}
-                  className={`w-full text-left px-3 py-2 text-sm ${filterStatus === 'all' ? 'bg-gray-100' : ''} ${TEXT_COLORS.primary} ${SHARED_CLASSES.hover} rounded-lg ${SHARED_CLASSES.transition}`}
-                >
-                  All tickets
-                </button>
-                <button
-                  onClick={() => { setFilterStatus('unread'); setShowFilters(false); }}
-                  className={`w-full text-left px-3 py-2 text-sm ${filterStatus === 'unread' ? 'bg-gray-100' : ''} ${TEXT_COLORS.primary} ${SHARED_CLASSES.hover} rounded-lg ${SHARED_CLASSES.transition}`}
-                >
-                  Unread only
-                </button>
-                <button
-                  onClick={() => { setFilterStatus('open'); setShowFilters(false); }}
-                  className={`w-full text-left px-3 py-2 text-sm ${filterStatus === 'open' ? 'bg-gray-100' : ''} ${TEXT_COLORS.primary} ${SHARED_CLASSES.hover} rounded-lg ${SHARED_CLASSES.transition}`}
-                >
-                  Open
-                </button>
-                <button
-                  onClick={() => { setFilterStatus('pending'); setShowFilters(false); }}
-                  className={`w-full text-left px-3 py-2 text-sm ${filterStatus === 'pending' ? 'bg-gray-100' : ''} ${TEXT_COLORS.primary} ${SHARED_CLASSES.hover} rounded-lg ${SHARED_CLASSES.transition}`}
-                >
-                  Pending
-                </button>
-                <button
-                  onClick={() => { setFilterStatus('closed'); setShowFilters(false); }}
-                  className={`w-full text-left px-3 py-2 text-sm ${filterStatus === 'closed' ? 'bg-gray-100' : ''} ${TEXT_COLORS.primary} ${SHARED_CLASSES.hover} rounded-lg ${SHARED_CLASSES.transition}`}
-                >
-                  Closed
-                </button>
+              <div className="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-10">
+                <div className="space-y-4">
+                  {/* Status Filter */}
+                  <div>
+                    <label className={`text-xs font-medium ${TEXT_COLORS.secondary} mb-2 block`}>Status</label>
+                    <select
+                      value={filterStatus}
+                      onChange={(e) => setFilterStatus(e.target.value)}
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-orange-200"
+                    >
+                      <option value="all">All statuses</option>
+                      <option value="open">Open</option>
+                      <option value="pending">Pending</option>
+                      <option value="resolved">Resolved</option>
+                      <option value="closed">Closed</option>
+                      <option value="unread">Unread only</option>
+                    </select>
+                  </div>
+
+                  {/* Project Filter */}
+                  <div>
+                    <label className={`text-xs font-medium ${TEXT_COLORS.secondary} mb-2 block`}>Project</label>
+                    <select
+                      value={filterProject}
+                      onChange={(e) => setFilterProject(e.target.value)}
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-orange-200"
+                    >
+                      <option value="all">All projects</option>
+                      {[...new Map(tickets.map(t => [t.project?.id, t.project])).values()]
+                        .filter(Boolean)
+                        .map(project => (
+                          <option key={project.id} value={project.id}>
+                            {project.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+
+                  {/* Source Filter */}
+                  <div>
+                    <label className={`text-xs font-medium ${TEXT_COLORS.secondary} mb-2 block`}>Source</label>
+                    <select
+                      value={filterSource}
+                      onChange={(e) => setFilterSource(e.target.value)}
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-orange-200"
+                    >
+                      <option value="all">All sources</option>
+                      <option value="email">Email</option>
+                      <option value="telegram">Telegram</option>
+                      <option value="whatsapp">WhatsApp</option>
+                    </select>
+                  </div>
+
+                  {/* Clear Filters */}
+                  {(filterStatus !== 'all' || filterProject !== 'all' || filterSource !== 'all') && (
+                    <button
+                      onClick={() => {
+                        setFilterStatus('all');
+                        setFilterProject('all');
+                        setFilterSource('all');
+                      }}
+                      className="w-full px-3 py-2 text-sm text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                    >
+                      Clear all filters
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </div>
