@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, ReactNode } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
 
 interface MultiselectOption {
   value: string;
   label: string;
+  icon?: ReactNode;
 }
 
 interface MultiselectProps {
@@ -75,6 +76,7 @@ export default function Multiselect({ options, selectedValues, onChange, placeho
                 <div className="w-4 h-4 border border-gray-300 rounded flex items-center justify-center flex-shrink-0">
                   {isSelected && <Check className="w-3 h-3 text-orange-600" />}
                 </div>
+                {option.icon && <span className="flex-shrink-0">{option.icon}</span>}
                 <span>{option.label}</span>
               </div>
             );

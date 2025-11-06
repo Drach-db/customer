@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Search, SlidersHorizontal, Folder, RefreshCw, AlertCircle } from 'lucide-react';
+import { Search, SlidersHorizontal, Folder, RefreshCw, AlertCircle, X } from 'lucide-react';
 import { SourceIcon, TICKET_SOURCES } from '@/lib/constants/ticket-sources';
 import { TEXT_COLORS } from '@/lib/constants/colors';
 import { getTickets, type TicketWithRelations } from '@/lib/services/tickets';
@@ -10,6 +10,7 @@ import { formatDistanceToNow } from 'date-fns';
 import PlaceholderState from './PlaceholderState';
 import Multiselect from './Multiselect';
 import { TICKET_STATUS, CONNECTOR_TYPE } from '@/lib/types/enums';
+import { SOURCE_ICONS, getStatusIcon } from '@/lib/constants/source-icons';
 
 // Tag component using global CSS
 interface TagProps {
@@ -223,6 +224,20 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
           >
             <RefreshCw className={`w-5 h-5 ${TEXT_COLORS.primary} ${loading ? 'animate-spin' : ''}`} />
           </button>
+          {/* Clear filters button - shows when filters are active */}
+          {(filterStatus.length > 0 || filterProject.length > 0 || filterSource.length > 0) && (
+            <button
+              onClick={() => {
+                setFilterStatus([]);
+                setFilterProject([]);
+                setFilterSource([]);
+              }}
+              className="btn-icon group"
+              title="Clear all filters"
+            >
+              <X className={`w-5 h-5 ${TEXT_COLORS.secondary} group-hover:text-orange-500 transition-colors`} />
+            </button>
+          )}
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={(e) => {
@@ -268,11 +283,11 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
                     <label className="filter-label">Status</label>
                     <Multiselect
                       options={[
-                        { value: 'open', label: 'Open' },
-                        { value: 'pending', label: 'Pending' },
-                        { value: 'resolved', label: 'Resolved' },
-                        { value: 'closed', label: 'Closed' },
-                        { value: 'unread', label: 'Unread only' }
+                        { value: 'open', label: 'Open', icon: getStatusIcon('open') },
+                        { value: 'pending', label: 'Pending', icon: getStatusIcon('pending') },
+                        { value: 'resolved', label: 'Resolved', icon: getStatusIcon('resolved') },
+                        { value: 'closed', label: 'Closed', icon: getStatusIcon('closed') },
+                        { value: 'unread', label: 'Unread only', icon: getStatusIcon('unread') }
                       ]}
                       selectedValues={filterStatus}
                       onChange={setFilterStatus}
@@ -288,7 +303,8 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
                         .filter(Boolean)
                         .map(project => ({
                           value: project.id,
-                          label: project.name
+                          label: project.name,
+                          icon: <Folder className="w-4 h-4 text-gray-500" />
                         }))}
                       selectedValues={filterProject}
                       onChange={setFilterProject}
@@ -301,9 +317,9 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
                     <label className="filter-label">Source</label>
                     <Multiselect
                       options={[
-                        { value: 'email', label: 'Email' },
-                        { value: 'telegram', label: 'Telegram' },
-                        { value: 'whatsapp', label: 'WhatsApp' }
+                        { value: 'email', label: 'Email', icon: <SOURCE_ICONS.email className="w-4 h-4 text-gray-500" /> },
+                        { value: 'telegram', label: 'Telegram', icon: <SOURCE_ICONS.telegram className="w-4 h-4 text-gray-500" /> },
+                        { value: 'whatsapp', label: 'WhatsApp', icon: <SOURCE_ICONS.whatsapp className="w-4 h-4 text-gray-500" /> }
                       ]}
                       selectedValues={filterSource}
                       onChange={setFilterSource}
