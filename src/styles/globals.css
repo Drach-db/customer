@@ -343,12 +343,17 @@ body {
   }
 
   .custom-select:focus {
-    @apply outline-none bg-white border-orange-200;
+    @apply outline-none bg-white border-gray-200;
   }
 
   /* Filter label styling */
   .filter-label {
-    @apply text-xs font-medium text-gray-500 mb-1.5 block;
+    @apply text-xs font-medium text-gray-600 flex items-center min-w-[80px];
+  }
+
+  /* Filter row layout - two column */
+  .filter-row {
+    @apply flex items-center gap-4;
   }
 
   /* Filter dropdown container */

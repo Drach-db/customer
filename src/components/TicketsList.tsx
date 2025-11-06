@@ -260,53 +260,53 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
                   </div>
 
                   {/* Status Filter */}
-                  <div>
+                  <div className="filter-row">
                     <label className="filter-label">Status</label>
                     <select
                       value={filterStatus}
                       onChange={(e) => setFilterStatus(e.target.value)}
-                      className="custom-select"
+                      className="custom-select flex-1"
                     >
                       <option value="all">All statuses</option>
-                      <option value="open">🟢 Open</option>
-                      <option value="pending">🟡 Pending</option>
-                      <option value="resolved">✅ Resolved</option>
-                      <option value="closed">⚫ Closed</option>
-                      <option value="unread">🔵 Unread only</option>
+                      <option value="open">Open</option>
+                      <option value="pending">Pending</option>
+                      <option value="resolved">Resolved</option>
+                      <option value="closed">Closed</option>
+                      <option value="unread">Unread only</option>
                     </select>
                   </div>
 
                   {/* Project Filter */}
-                  <div>
+                  <div className="filter-row">
                     <label className="filter-label">Project</label>
                     <select
                       value={filterProject}
                       onChange={(e) => setFilterProject(e.target.value)}
-                      className="custom-select"
+                      className="custom-select flex-1"
                     >
                       <option value="all">All projects</option>
                       {[...new Map(tickets.map(t => [t.project?.id, t.project])).values()]
                         .filter(Boolean)
                         .map(project => (
                           <option key={project.id} value={project.id}>
-                            📁 {project.name}
+                            {project.name}
                           </option>
                         ))}
                     </select>
                   </div>
 
                   {/* Source Filter */}
-                  <div>
+                  <div className="filter-row">
                     <label className="filter-label">Source</label>
                     <select
                       value={filterSource}
                       onChange={(e) => setFilterSource(e.target.value)}
-                      className="custom-select"
+                      className="custom-select flex-1"
                     >
                       <option value="all">All sources</option>
-                      <option value="email">✉️ Email</option>
-                      <option value="telegram">💬 Telegram</option>
-                      <option value="whatsapp">📱 WhatsApp</option>
+                      <option value="email">Email</option>
+                      <option value="telegram">Telegram</option>
+                      <option value="whatsapp">WhatsApp</option>
                     </select>
                   </div>
 
