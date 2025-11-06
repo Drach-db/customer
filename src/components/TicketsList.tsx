@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Search, SlidersHorizontal, Folder, RefreshCw, AlertCircle, Check } from 'lucide-react';
+import { Search, SlidersHorizontal, Folder, RefreshCw, AlertCircle } from 'lucide-react';
 import { SourceIcon, TICKET_SOURCES } from '@/lib/constants/ticket-sources';
 import { TEXT_COLORS } from '@/lib/constants/colors';
 import { getTickets, type TicketWithRelations } from '@/lib/services/tickets';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { formatDistanceToNow } from 'date-fns';
 import PlaceholderState from './PlaceholderState';
+import Multiselect from './Multiselect';
 import { TICKET_STATUS, CONNECTOR_TYPE } from '@/lib/types/enums';
 
 // Tag component using global CSS
@@ -41,9 +42,9 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
   const [tickets, setTickets] = useState<TicketWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [filterProject, setFilterProject] = useState<string>('all');
-  const [filterSource, setFilterSource] = useState<string>('all');
+  const [filterStatus, setFilterStatus] = useState<string[]>([]);
+  const [filterProject, setFilterProject] = useState<string[]>([]);
+  const [filterSource, setFilterSource] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -100,22 +101,25 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
   const filteredTickets = useMemo(() => {
     return tickets.filter(ticket => {
       // Status filter
-      if (filterStatus !== 'all') {
-        if (filterStatus === 'unread' && ticket.last_message?.read_at) {
-          return false;
-        }
-        if (filterStatus !== 'unread' && ticket.status !== filterStatus) {
+      if (filterStatus.length > 0) {
+        const hasUnread = filterStatus.includes('unread');
+        const otherStatuses = filterStatus.filter(s => s !== 'unread');
+
+        const matchesUnread = hasUnread && !ticket.last_message?.read_at;
+        const matchesStatus = otherStatuses.length > 0 && otherStatuses.includes(ticket.status);
+
+        if (!matchesUnread && !matchesStatus) {
           return false;
         }
       }
 
       // Project filter
-      if (filterProject !== 'all' && ticket.project?.id !== filterProject) {
+      if (filterProject.length > 0 && !filterProject.includes(ticket.project?.id || '')) {
         return false;
       }
 
       // Source filter
-      if (filterSource !== 'all' && ticket.connector?.type !== filterSource) {
+      if (filterSource.length > 0 && !filterSource.includes(ticket.connector?.type || '')) {
         return false;
       }
 
@@ -230,7 +234,7 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
             >
               <SlidersHorizontal className={`w-5 h-5 ${TEXT_COLORS.primary} group-hover:rotate-90 transition-transform duration-300`} />
               {/* Active filters indicator */}
-              {(filterStatus !== 'all' || filterProject !== 'all' || filterSource !== 'all') && (
+              {(filterStatus.length > 0 || filterProject.length > 0 || filterSource.length > 0) && (
                 <span className="absolute -top-1 -right-1 w-2 h-2 bg-orange-500 rounded-full"></span>
               )}
             </button>
@@ -240,12 +244,12 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
               <div className="filter-dropdown">
                 <div className="space-y-3.5">
                   {/* Header */}
-                  <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+                  <div className="flex items-center justify-between pb-3">
                     <div className="flex items-center gap-2">
                       <h3 className="text-sm font-semibold text-gray-800">Filters</h3>
-                      {(filterStatus !== 'all' || filterProject !== 'all' || filterSource !== 'all') && (
+                      {(filterStatus.length > 0 || filterProject.length > 0 || filterSource.length > 0) && (
                         <span className="px-1.5 py-0.5 text-xs bg-orange-100 text-orange-600 rounded-full">
-                          {[filterStatus !== 'all', filterProject !== 'all', filterSource !== 'all'].filter(Boolean).length}
+                          {filterStatus.length + filterProject.length + filterSource.length}
                         </span>
                       )}
                     </div>
@@ -262,62 +266,59 @@ export default function TicketsList({ onTicketSelect, selectedTicketId }: Ticket
                   {/* Status Filter */}
                   <div className="filter-row">
                     <label className="filter-label">Status</label>
-                    <select
-                      value={filterStatus}
-                      onChange={(e) => setFilterStatus(e.target.value)}
-                      className="custom-select flex-1"
-                    >
-                      <option value="all">All statuses</option>
-                      <option value="open">Open</option>
-                      <option value="pending">Pending</option>
-                      <option value="resolved">Resolved</option>
-                      <option value="closed">Closed</option>
-                      <option value="unread">Unread only</option>
-                    </select>
+                    <Multiselect
+                      options={[
+                        { value: 'open', label: 'Open' },
+                        { value: 'pending', label: 'Pending' },
+                        { value: 'resolved', label: 'Resolved' },
+                        { value: 'closed', label: 'Closed' },
+                        { value: 'unread', label: 'Unread only' }
+                      ]}
+                      selectedValues={filterStatus}
+                      onChange={setFilterStatus}
+                      placeholder="All statuses"
+                    />
                   </div>
 
                   {/* Project Filter */}
                   <div className="filter-row">
                     <label className="filter-label">Project</label>
-                    <select
-                      value={filterProject}
-                      onChange={(e) => setFilterProject(e.target.value)}
-                      className="custom-select flex-1"
-                    >
-                      <option value="all">All projects</option>
-                      {[...new Map(tickets.map(t => [t.project?.id, t.project])).values()]
+                    <Multiselect
+                      options={[...new Map(tickets.map(t => [t.project?.id, t.project])).values()]
                         .filter(Boolean)
-                        .map(project => (
-                          <option key={project.id} value={project.id}>
-                            {project.name}
-                          </option>
-                        ))}
-                    </select>
+                        .map(project => ({
+                          value: project.id,
+                          label: project.name
+                        }))}
+                      selectedValues={filterProject}
+                      onChange={setFilterProject}
+                      placeholder="All projects"
+                    />
                   </div>
 
                   {/* Source Filter */}
                   <div className="filter-row">
                     <label className="filter-label">Source</label>
-                    <select
-                      value={filterSource}
-                      onChange={(e) => setFilterSource(e.target.value)}
-                      className="custom-select flex-1"
-                    >
-                      <option value="all">All sources</option>
-                      <option value="email">Email</option>
-                      <option value="telegram">Telegram</option>
-                      <option value="whatsapp">WhatsApp</option>
-                    </select>
+                    <Multiselect
+                      options={[
+                        { value: 'email', label: 'Email' },
+                        { value: 'telegram', label: 'Telegram' },
+                        { value: 'whatsapp', label: 'WhatsApp' }
+                      ]}
+                      selectedValues={filterSource}
+                      onChange={setFilterSource}
+                      placeholder="All sources"
+                    />
                   </div>
 
                   {/* Clear Filters */}
-                  {(filterStatus !== 'all' || filterProject !== 'all' || filterSource !== 'all') && (
-                    <div className="pt-2 border-t border-gray-100">
+                  {(filterStatus.length > 0 || filterProject.length > 0 || filterSource.length > 0) && (
+                    <div className="pt-3">
                       <button
                         onClick={() => {
-                          setFilterStatus('all');
-                          setFilterProject('all');
-                          setFilterSource('all');
+                          setFilterStatus([]);
+                          setFilterProject([]);
+                          setFilterSource([]);
                         }}
                         className="w-full px-3 py-2 text-sm text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors font-medium"
                       >
